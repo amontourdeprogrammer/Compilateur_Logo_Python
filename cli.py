@@ -2,11 +2,15 @@ import sys
 from compilateur_logo import compile_logo
 
 filename = sys.argv[1]
-commands = []
-with open (filename) as inputfile:
-    for line in inputfile:
-        commands.append(line.strip().split())
 
+def turnsLogoIntoList(filename):
+  commands = []
+  with open (filename) as inputfile:
+      for line in inputfile:
+          commands.append(line.strip().split())
+  return commands
+  
+commands = turnsLogoIntoList(filename)
 text = str(sys.argv)
 print """
 <script src="processing.js"></script>

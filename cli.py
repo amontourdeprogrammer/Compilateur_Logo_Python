@@ -11,30 +11,49 @@ text = str(sys.argv)
 print """
 <script src="processing.js"></script>
 <script type="text/processing" data-processing-target="processing-canvas">
-float x, y, dir;
+float x;
+float y;
+int dir;
+void setup(){{
+  size(500, 500);
+  noLoop();
+}}
 
-void av(float pas) {{
-  float new_x = x + pas * cos(radians(dir)),
-        new_y = y + pas * sin(radians(dir));
+void draw(){{
+  background(255);
+  translate(250, 250);
+  executeLogoCommands();
+  drawTurtle();
+}}
+
+void drawTurtle(){{
+  pushMatrix();
+  translate(x, y);
+  rotate(radians(90+dir));
+  int l = 20;
+  triangle(0, -l, l/2, 0, -l/2, 0); 
+  popMatrix();
+}}
+
+
+void av(int pas) {{
+  float pasx = pas * cos(radians(dir));
+  float pasy = pas * sin(radians(dir));
+  float new_x = x + pasx;
+  float new_y = y + pasy;
   line(x, y, new_x, new_y);
-  x = new_x; y = new_y;
+  x = new_x;
+  y = new_y;
 }}
 
 void td(float angle) {{
   dir += angle;
 }}
 
-void setup() {{
-  size(500, 500);
-  strokeWeight(5);
-  x = y = width/2;
-  dir = 0;
-  noLoop();
+void executeLogoCommands(){{
+  {}
 }}
 
-void draw() {{
-{}
-}}
 </script>
 <canvas id="processing-canvas"></canvas>
 

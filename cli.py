@@ -50,6 +50,15 @@ void td(float angle) {{
   dir += angle;
 }}
 
+void tg(float angle) {{
+  dir -= angle;
+}}
+
+void origin() {{
+  x = 0;
+  y = 0
+}}
+
 void executeLogoCommands(){{
   {}
 }}

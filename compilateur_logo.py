@@ -6,6 +6,8 @@ def compile_logo(commands):
     		reapeated_commands = (deal_with_functions(deal_with_brackets(command)))
     		result = "for (int i = 0; i < "+times+"; i = i+1){\n"+ reapeated_commands +"\n}"
     		html_commands.append(result)
+    	elif command[0] == "origin":
+    		html_commands.append("origin();")
     	else :
        		html_commands.append ("{}({});".format(command[0], command[1]))
     return '\n'.join(html_commands)
@@ -29,7 +31,7 @@ def deal_with_brackets(command):
 #given a command, extract the commands
 def deal_with_functions(command):
 	html_commands = []
-	known_functions_with_argument = ["av", "td"]
+	known_functions_with_argument = ["av", "td", "tg"]
 	known_functions_without_argument = ['trait']
 	while len(command) >= 1 :
 		function_in_list = command.pop(0)
@@ -40,3 +42,6 @@ def deal_with_functions(command):
 		else :
 			raise NameError("{} is not defined".format(command[i]))
 	return '\n'.join(html_commands)
+
+
+

@@ -1,11 +1,8 @@
-av 50
-td 230
-av 50
-td 90
-av 145
-repete 3 [av 50 td 90 av 50 td 90 av 50 td 90 av 50 td 90 av 50]
+repete 3 [av 50 td 90 av 50 td 90 av 50 td 90 av 50 tg 90 av 50]
+origin
 td 90
 av 50
-td 60
+tg 60
 av 80
 td 180
+origin

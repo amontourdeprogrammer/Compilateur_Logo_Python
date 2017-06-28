@@ -3,6 +3,7 @@ td 230
 av 50
 td 90
 av 145
+repete 3 [av 50 td 90 av 50 td 90 av 50 td 90 av 50 td 90 av 50]
 td 90
 av 50
 td 60

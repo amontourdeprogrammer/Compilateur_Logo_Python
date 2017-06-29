@@ -1,12 +1,12 @@
 import pytest
-from compilateur_logo import compile_logo, deal_with_brackets, deal_with_functions
+from compilateur_logo import compile_logo, deal_with_functions, seperate_brackets_from_content
 
 def test_compile_one_logo_command():
     assert compile_logo([["av","50"]]) == "av(50);"
 def test_compile_several_logo_commands():
     assert compile_logo([["av","50"], ["td","90"]]) == "av(50);\ntd(90);"
 def test_isolate_commands_in_brackets():
-	assert deal_with_brackets(["repete", "12", "[origin", "td", "30", "td", "50]"]) == ['origin', 'td', '30', 'td', '50']
+	assert seperate_brackets_from_content(["repete", "12", "[origin", "td", "30", "td", "50]"]) == ["repete", "12", "[", "origin", "td", "30", "td", "50", "]"]
 def test_transform_logo_commands_in_processing():
 	assert deal_with_functions(['origin', 'td', '30', 'td', '50']) == "origin();\ntd(30);\ntd(50);"
 def test_compile_repete():

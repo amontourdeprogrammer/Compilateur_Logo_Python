@@ -1,29 +1,88 @@
 import pytest
-from compilateur_logo import compile_logo, deal_with_functions, seperate_brackets_from_content
+from compil_logo_with_class import Commande_Logo
+
+braketless_logo_command = ["av","50"]
+several_braketless_logo_command = ["av","50", "td","90", "origine"]
+braketmedium_logo_command = ["repete", "12", "[origine", "td", "30", "td", "50]"]
+braketfull_logo_command = ["repete", "12", "[repete", "4", "[av", "20]", "td", "30]"]
+complex_braketfull_logo_command = ["repete", "12", "[origine","repete", "4", "[av", "20]","repete", "6", "[av", "20]", "td", "30]"]
+
+# Create Command object with seperated brackets
 
 def test_compile_one_logo_command():
-    assert compile_logo([["av","50"]]) == "av(50);"
-def test_compile_several_logo_commands():
-    assert compile_logo([["av","50"], ["td","90"]]) == "av(50);\ntd(90);"
-def test_isolate_commands_in_brackets():
-	assert seperate_brackets_from_content(["repete", "12", "[origin", "td", "30", "td", "50]"]) == ["repete", "12", "[", "origin", "td", "30", "td", "50", "]"]
-def test_transform_logo_commands_in_processing():
-	assert deal_with_functions(['origin', 'td', '30', 'td', '50']) == "origin();\ntd(30);\ntd(50);"
-def test_compile_repete():
-    assert compile_logo([["repete", "12", "[origin", "td", "30]"]]) == "for (int i = 0; i < 12; i = i+1){\norigin();\ntd(30);\n}"
-def test_compile_repete_with_other_commands():
-	assert compile_logo([["av","50"], ["td","90"],["repete", "12", "[origin", "td", "30]"], ["av","50"], ["td","90"]])== "av(50);\ntd(90);\nfor (int i = 0; i < 12; i = i+1){\norigin();\ntd(30);\n}\nav(50);\ntd(90);"
-def test_compile_repete():
-    assert compile_logo([["repete", "12", "[repete", "4", "[av", "20]", "td", "30]"]]) == "for (int i = 0; i < 12; i = i+1){\nfor (int i = 0; i < 4; i = i+1){\nav(20);\n}\ntd(30);\n}"
+    a = Commande_Logo(braketless_logo_command)
+    assert a.logo_command == ["av", "50"]
 
 
-#def test_compile_if():
-    #assert compile_logo([["si", "1", "<", "2" "[td", "30]"]]) == "if(1<2){\ntd(30);\n}"
-
-#def test_compile_if_else():
-    #assert compile_logo([["si", "1", "<", "2", "[td", "30]","[av","60]"]]) == "if(1<2){\ntd(30);\n}else{\nav(60);\n}"
+def test_prepare_several_braketless_logo_command():
+    a = Commande_Logo(several_braketless_logo_command)
+    assert a.logo_command == ["av","50", "td","90", "origine"]
 
 
+def test_prepare_braketmedium_logo_command():
+    a = Commande_Logo(braketmedium_logo_command)
+    assert a.logo_command == ["repete", "12", "[", "origine", "td", "30", "td", "50", "]"]
 
 
+def test_prepare_braketfull_logo_command():
+    a = Commande_Logo(braketfull_logo_command)
+    assert a.logo_command == ["repete", "12", "[","repete", "4", "[", "av", "20", "]", "td", "30", "]"]
+
+# Find deepest brackets
+
+def test_find_braketless_deepest_braket():
+    a = Commande_Logo(braketless_logo_command)
+    b = a.find_deepest_brackets()
+    assert [a.deepest_bracket, a.context, b] == [False, ["av", "50"], False]
+
+
+def test_find_several_braketless_deepest_braket():
+    a = Commande_Logo(several_braketless_logo_command)
+    b = a.find_deepest_brackets()
+    assert [a.deepest_bracket, a.context, b] == [False, ["av","50", "td","90", "origine"], False]
+
+
+def test_find_several_braketmedium_deepest_braket():
+    a = Commande_Logo(braketmedium_logo_command)
+    b = a.find_deepest_brackets()
+    assert [a.deepest_bracket, a.context, b] == [["origine", "td", "30", "td", "50"],["repete", "12","CONTENT"], True]
+
+
+def test_find_several_braketfull_deepest_braket():
+    a = Commande_Logo(braketfull_logo_command)
+    b = a.find_deepest_brackets()
+    assert [a.deepest_bracket, a.context, b] == [["av", "20"],["repete", "12", "[", "repete", "4", "CONTENT", "td", "30","]"], True]
+
+# Deal with expressions
+
+def test_deal_with_braketless_expressions():
+    a = Commande_Logo(braketless_logo_command)
+    assert a.deal_with_braketless_expressions(a.context) == "av(50);"
+
+def test_deal_with_several_braketless_expressions():
+    a = Commande_Logo(several_braketless_logo_command)
+    assert a.deal_with_braketless_expressions(a.context) == "av(50);\ntd(90);\norigine();"
+
+# Deal with complex bracket
+
+def test_deal_with_complex_braketless_expressions():
+    a = Commande_Logo(braketless_logo_command)
+    assert a.deal_with_complex_expression() == "av(50);"
+
+def test_deal_with_complex_several_braketless_expressions():
+    a = Commande_Logo(several_braketless_logo_command)
+    assert a.deal_with_complex_expression() == "av(50);\ntd(90);\norigine();"
+
+def test_deal_with_complex_braketmedium_expressions():
+    a = Commande_Logo(braketmedium_logo_command)
+    assert a.deal_with_complex_expression() == "for (int i = 0; i < 12; i = i+1){\norigine();\ntd(30);\ntd(50);\n}"
+
+
+def test_deal_with_complex_braketfull_expressions():
+    a = Commande_Logo(braketfull_logo_command)
+    assert a.deal_with_complex_expression() == "for (int i = 0; i < 12; i = i+1){\nfor (int i = 0; i < 4; i = i+1){\nav(20);\n}\ntd(30);\n}"
+
+def _test_deal_with_very_complex_braketfull_expressions():
+    a = Commande_Logo(complex_braketfull_logo_command)
+    assert a.deal_with_complex_expression() == "tg(79);\nfor (int i = 0; i < 12; i = i+1){\norigine();\nfor (int i = 0; i < 4; i = i+1){\nav(20);\n}\ntd(30);\n}\nfor (int i = 0; i < 6; i = i+1){\nav(20);\n}"
 

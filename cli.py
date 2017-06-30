@@ -7,7 +7,6 @@ with open (filename) as inputfile:
     for line in inputfile:
         commands.append(line.strip().split())
 
-text = str(sys.argv)
 print """
 <script src="processing.js"></script>
 <script type="text/processing" data-processing-target="processing-canvas">
